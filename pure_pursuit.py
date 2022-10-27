@@ -2,7 +2,7 @@
 
 Path tracking simulation with pure pursuit steering control and PID speed control.
 
-author: Atsushi Sakai (@Atsushi_twi)
+author: Lee-SeonWoo
 
 """
 
@@ -14,6 +14,8 @@ from scipy import io
 from matplotlib.markers import MarkerStyle
 from matplotlib.transforms import Affine2D
 import os
+import imageio
+import shutil
 
 k = 0.1  # look forward gain
 Lfc = 1.0  # look-ahead distance
@@ -113,8 +115,10 @@ def main(cx, cy, target_speed, T, state):
     nearest_ind, target_ind = calc_target_index(state, cx, cy)
     near = [nearest_ind] 
     target = [target_ind]
-    
-    
+    # for gif files
+    frames = []
+    SAVE_DIR = './tmp'
+    cnt= 0
     while T >= time and lastIndex > target_ind:
         ai = PIDControl(target_speed, state.v)
         di, target_ind, nearest_ind = pure_pursuit_control(state, cx, cy, target_ind)
@@ -167,14 +171,19 @@ def main(cx, cy, target_speed, T, state):
                         labels=["Path","ERP42", "Nearest Point", "Waypoint"], 
                         loc='upper right',
                         scatterpoints=1)
+            os.makedirs(SAVE_DIR, exist_ok=True)
             plt.pause(0.001)
-            
+            plt.savefig(os.path.join(SAVE_DIR, f'{cnt:03d}.png'))
+            cnt+=1
             # plt.show()
-
-    if save_gif:
-        fig = plt.figure()
-        ani = matplotlib.animation.FuncAnimation(fig, save_animation, frames=50, interval=100)
-        ani.save('animation.gif', writer='imagemagick', fps=30)
+    
+    for filename in os.listdir(SAVE_DIR):
+        if filename.endswith(".png"):
+            
+            frames.append(imageio.imread(os.path.join(SAVE_DIR, filename)))
+    exportname = "annimation.gif"
+    imageio.mimsave(exportname, frames, format='GIF', duration=0.001)
+    shutil.rmtree(SAVE_DIR)
 
 def save_animation(x, y, cx, cy, near, target, yaw):
     plt.cla()
