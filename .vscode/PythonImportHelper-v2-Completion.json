@@ -1,0 +1,197 @@
+[
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "math",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "math",
+        "description": "math",
+        "detail": "math",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.pyplot",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.pyplot",
+        "description": "matplotlib.pyplot",
+        "detail": "matplotlib.pyplot",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.animation",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.animation",
+        "description": "matplotlib.animation",
+        "detail": "matplotlib.animation",
+        "documentation": {}
+    },
+    {
+        "label": "io",
+        "importPath": "scipy",
+        "description": "scipy",
+        "isExtraImport": true,
+        "detail": "scipy",
+        "documentation": {}
+    },
+    {
+        "label": "MarkerStyle",
+        "importPath": "matplotlib.markers",
+        "description": "matplotlib.markers",
+        "isExtraImport": true,
+        "detail": "matplotlib.markers",
+        "documentation": {}
+    },
+    {
+        "label": "Affine2D",
+        "importPath": "matplotlib.transforms",
+        "description": "matplotlib.transforms",
+        "isExtraImport": true,
+        "detail": "matplotlib.transforms",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "State",
+        "kind": 6,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "class State:\n    def __init__(self, x=0.0, y=0.0, yaw=0.0, v=0.0):\n        self.x = x\n        self.y = y\n        self.yaw = yaw\n        self.v = v\ndef update(state, a, delta):\n    state.x = state.x + state.v * math.cos(state.yaw) * dt\n    state.y = state.y + state.v * math.sin(state.yaw) * dt\n    state.yaw = state.yaw + state.v / L * math.tan(delta) * dt",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "update",
+        "kind": 2,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "def update(state, a, delta):\n    state.x = state.x + state.v * math.cos(state.yaw) * dt\n    state.y = state.y + state.v * math.sin(state.yaw) * dt\n    state.yaw = state.yaw + state.v / L * math.tan(delta) * dt\n    state.v = state.v + a * dt\n    return state\ndef PIDControl(target, current):\n    a = Kp * (target - current)\n    return a\ndef pure_pursuit_control(state, cx, cy, pind):",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "PIDControl",
+        "kind": 2,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "def PIDControl(target, current):\n    a = Kp * (target - current)\n    return a\ndef pure_pursuit_control(state, cx, cy, pind):\n    nearest_ind, ind = calc_target_index(state, cx, cy)\n    if pind >= ind:\n        ind = pind\n    if ind < len(cx):\n        tx = cx[ind]\n        ty = cy[ind]",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "pure_pursuit_control",
+        "kind": 2,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "def pure_pursuit_control(state, cx, cy, pind):\n    nearest_ind, ind = calc_target_index(state, cx, cy)\n    if pind >= ind:\n        ind = pind\n    if ind < len(cx):\n        tx = cx[ind]\n        ty = cy[ind]\n    else:\n        tx = cx[-1]\n        ty = cy[-1]",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "calc_target_index",
+        "kind": 2,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "def calc_target_index(state, cx, cy):\n    # search nearest point index\n    dx = [state.x - icx for icx in cx]\n    dy = [state.y - icy for icy in cy]\n    d = [abs(math.sqrt(idx ** 2 + idy ** 2)) for (idx, idy) in zip(dx, dy)]\n    nearest_ind = d.index(min(d))\n    L = 0.0\n    ind = nearest_ind\n    Lf = k * state.v + Lfc\n    # search look ahead target point index",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "def main(cx, cy, target_speed, T, state):\n    lastIndex = len(cx) - 1\n    time = 0.0\n    x = [state.x]\n    y = [state.y]\n    yaw = [state.yaw]\n    v = [state.v]\n    t = [0.0]\n    nearest_ind, target_ind = calc_target_index(state, cx, cy)\n    near = [nearest_ind] ",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "save_animation",
+        "kind": 2,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "def save_animation(x, y, cx, cy, near, target, yaw):\n    plt.cla()\n    path_plot = plt.plot(cx, cy, \"-r\", linewidth=0.5, alpha=0.7, label=\"Path\")\n    erp_plot = plt.scatter(x=x, y=y, \n                        marker=MarkerStyle(\">\", transform=Affine2D().rotate_deg(yaw[-1]*45), fillstyle='none'),\n                        # marker=(1, 0, yaw[-1]), #\n                        s=50, \n                        linewidths=0.5,\n                        color='blue')\n    plt.text(x=x[-1], y=y[-1], s=f'{yaw[-1]*45:.2f}', fontsize=20)",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "k",
+        "kind": 5,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "k = 0.1  # look forward gain\nLfc = 1.0  # look-ahead distance\nKp = 1.0  # speed propotional gain\ndt = 0.1  # [s]\nL = 1.04  # [m] wheel base of vehicle\nshow_animation = True\nsave_gif = True\nclass State:\n    def __init__(self, x=0.0, y=0.0, yaw=0.0, v=0.0):\n        self.x = x",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "Lfc",
+        "kind": 5,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "Lfc = 1.0  # look-ahead distance\nKp = 1.0  # speed propotional gain\ndt = 0.1  # [s]\nL = 1.04  # [m] wheel base of vehicle\nshow_animation = True\nsave_gif = True\nclass State:\n    def __init__(self, x=0.0, y=0.0, yaw=0.0, v=0.0):\n        self.x = x\n        self.y = y",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "Kp",
+        "kind": 5,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "Kp = 1.0  # speed propotional gain\ndt = 0.1  # [s]\nL = 1.04  # [m] wheel base of vehicle\nshow_animation = True\nsave_gif = True\nclass State:\n    def __init__(self, x=0.0, y=0.0, yaw=0.0, v=0.0):\n        self.x = x\n        self.y = y\n        self.yaw = yaw",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "dt",
+        "kind": 5,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "dt = 0.1  # [s]\nL = 1.04  # [m] wheel base of vehicle\nshow_animation = True\nsave_gif = True\nclass State:\n    def __init__(self, x=0.0, y=0.0, yaw=0.0, v=0.0):\n        self.x = x\n        self.y = y\n        self.yaw = yaw\n        self.v = v",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "L",
+        "kind": 5,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "L = 1.04  # [m] wheel base of vehicle\nshow_animation = True\nsave_gif = True\nclass State:\n    def __init__(self, x=0.0, y=0.0, yaw=0.0, v=0.0):\n        self.x = x\n        self.y = y\n        self.yaw = yaw\n        self.v = v\ndef update(state, a, delta):",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "show_animation",
+        "kind": 5,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "show_animation = True\nsave_gif = True\nclass State:\n    def __init__(self, x=0.0, y=0.0, yaw=0.0, v=0.0):\n        self.x = x\n        self.y = y\n        self.yaw = yaw\n        self.v = v\ndef update(state, a, delta):\n    state.x = state.x + state.v * math.cos(state.yaw) * dt",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    },
+    {
+        "label": "save_gif",
+        "kind": 5,
+        "importPath": "pure_pursuit",
+        "description": "pure_pursuit",
+        "peekOfCode": "save_gif = True\nclass State:\n    def __init__(self, x=0.0, y=0.0, yaw=0.0, v=0.0):\n        self.x = x\n        self.y = y\n        self.yaw = yaw\n        self.v = v\ndef update(state, a, delta):\n    state.x = state.x + state.v * math.cos(state.yaw) * dt\n    state.y = state.y + state.v * math.sin(state.yaw) * dt",
+        "detail": "pure_pursuit",
+        "documentation": {}
+    }
+]
